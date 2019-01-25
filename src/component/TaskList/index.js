@@ -6,38 +6,59 @@ class TaskList extends PureComponent {
         super(props);
 
         this.state= {
-            openGroup: -1
+            openGroup: [true, true, true],
+            openFilteCategories: false
         };
 
         this.editOpenGroup = this.editOpenGroup.bind(this);
+        this.openCategories = this.openCategories.bind(this);
     }
-    editOpenGroup =(event) =>{
+
+    editOpenGroup =(e) =>{
+        let new_state = this.state.openGroup.slice();
+        new_state[e]= !new_state[e];
         this.setState({
-            openGroup: event.target.value
-        })
-    }
-    render (){
-        const {tasks} = this.props;
-        if (this.state.openGroup == -1) {
-            var artElement = tasks.map(tasks =>
-                <li key={tasks.id}><Task task={tasks} changeGroup={this.props.changeGroup}/></li>
-            )//test_commentary
+            openGroup:  new_state
+        });
+    };
+    openCategories =() =>{
+        if (this.state.openFilteCategories) {
+            this.setState({
+                openGroup: [true,true,true],
+                openFilteCategories: false
+            });
         }else{
-            var filterArr = tasks.filter(tasks => tasks.group_task == this.state.openGroup)
-            var artElement = filterArr.map(filterArr =>
-                <li key={filterArr.id}><Task task={filterArr} changeGroup={this.props.changeGroup}/></li>
-            )
+            this.setState({
+                openGroup: [false,false,false],
+                openFilteCategories: true
+            });
         }
+    };
+
+    render (){
+            const {tasks} = this.props;
+
+            const filterArr = tasks.filter(tasks => (this.state.openGroup[0] && (tasks.group_task === 0)) ||
+                                                  (this.state.openGroup[1] && (tasks.group_task === 1)) ||
+                                                  (this.state.openGroup[2] && (tasks.group_task === 2))
+            );
+            const artElement = filterArr.map(filterArr =>
+                <li key={filterArr.id}><Task task={filterArr} changeGroup={this.props.changeGroup}/></li>
+            );
+
+            const filterCategories = this.state.openFilteCategories &&
+                <div>
+                    <p><input type="checkbox" onChange={() =>this.editOpenGroup(0)}/>Выполнить</p>
+                    <p><input type="checkbox" onChange={() =>this.editOpenGroup(1)}/>Выполняется</p>
+                    <p><input type="checkbox" onChange={() =>this.editOpenGroup(2)}/>Выполнено</p>
+                </div>;
+
+
         return (
             <div>
                 <p>
-                    Фильтр категорий:
-                    <select value={this.state.openGroup} onChange={this.editOpenGroup}>
-                        <option value={-1}>Нет</option>
-                        <option value={0}>Выполнить</option>
-                        <option value={1}>Выполняется</option>
-                        <option value={2}>Выполнено</option>
-                    </select>
+                    Фильтр категорий:<button onClick={this.openCategories}>{this.state.openFilteCategories ? 'выкл' : 'вкл'}</button>
+                    {filterCategories}
                 </p>
                 <ul>
                     {artElement}

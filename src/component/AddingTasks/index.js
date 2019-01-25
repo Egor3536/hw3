@@ -28,7 +28,7 @@ class AddingTasks extends Component {
     }
 
     checkSend  (tasks_created , addTask) {
-        if(this.state.nameTask && this.state.descriptionTask) {
+        if(this.state.nameTask) {
             var id_t = 0;
             tasks_created ? id_t = tasks_created.length : id_t = 0 ;
 
