@@ -14,7 +14,7 @@ class Task extends Component {
                 <p>{task.id}--{task.description}</p>
                 <p>Статус Задачи: {name_group_task[task.group_task]}</p>
                 <p>create date: {(new Date(task.data_time)).toDateString()}</p>
-                <button onClick={() => this.changeGroupTask(task.id, task.group_task, changeGroup)}>NewGroup</button>
+                <button onClick={() => this.changeGroupTask(task.id, task.group_task, changeGroup)}>NextGroup</button>
             </div>
         )
     }
